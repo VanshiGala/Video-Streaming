@@ -1,62 +1,73 @@
-import express from "express";
+import express, { urlencoded } from "express";
 import cors from "cors";
-import multer from "multer";
-import {v4 as uuidv4} from 'uuid'
-import path from "path"
-import fs from "fs"
-import {exec} from "child_process"
-import {stderr, stdout} from "process"
+import path from "path";
+import crypto from "crypto"
+import mongoose from "mongoose";
+import multer from "multer"
+import {GridFsStorage} from "multer-gridfs-storage"
+import Grid from "gridfs-stream"
+import methodOverride from "method-override"
+// import bodyParser from "body-parser";
 
 const app = express();
-app.use(cors({ origin: "http://localhost:5173" }));
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "./uploads"),
-  filename: (req, file, cb) => {
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + unique);
-  },
+app.use(cors({ origin: "http://localhost:5173" }));
+app.use(express.json())
+app.use(urlencoded())
+app.use(methodOverride('_method'))
+
+// main().catch(err=> console.log(err)).then(()=>console.log("Connected"))
+
+const mongoURL = 'mongodb://127.0.0.1:27017/Videos'
+const conn = mongoose.createConnection(mongoURL)
+
+let gfs
+conn.once('open', ()=>{
+
+  //initial stream
+  gfs = Grid(conn.db, mongoose.mongo)
+  gfs.collection('uploads')
+})
+
+//create storage engine
+const storage = new GridFsStorage({
+  url: mongoURL,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString('hex') + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: 'uploads'
+        };
+        resolve(fileInfo);
+      });
+    });
+  }
 });
 const upload = multer({ storage });
 
 
-app.post("/uploads", upload.single("myfile"), (req, res) => {
- // res.send(req.file);
- // res.json({ message: "File uploaded successfully!", file: req.file });
-  const lessonId = uuidv4()
-  const videoPath = req.file.path
-  const outputPath = `./uploads/vid/${lessonId}`
-  const hlsPath = `${outputPath}/index.m3u8`
-  console.log("Hls path ",hlsPath)
-
-  if(!fs.existsSync(outputPath)){
-    fs.mkdirSync(outputPath, {recursive: true})
-  }
-  const ffmpegPath = "C:/ffmpeg/bin/ffmpeg.exe";
-  //const cmd = `ffmpeg -i "${videoPath}" -codec:v libx264 -codec:a aac -hls_time 10 -hls_playlist_type vod -hls_segment_filename "${outputPath}/segment%03d.ts" -start_number 0 "${hlsPath}"`;
-  const cmd = `"${ffmpegPath}" -i "${videoPath}" -codec:v libx264 -codec:a aac -hls_time 10 -hls_playlist_type vod -hls_segment_filename "${outputPath}/segment%03d.ts" -start_number 0 "${hlsPath}"`;
-
-  exec(cmd, (error, stdout, stderr)=>{
-    if (error){
-      console.log(`exec error : ${error}`)
-    }
-    console.log(`stdout : ${stdout}`)
-    console.log(`stderr : ${stderr}`)
-    const vidUrl = `https://localhost:8000/uploads/vid/${lessonId}/index.m3u8`;
-
-    res.json({message: "Video converted to hls",
-      vidUrl: vidUrl,
-      lessonId: lessonId
-    })
-  })
-});
-
-
+//@route GET/
+//@desc Upload file to DB
 app.get("/home", (req, res) => {
   res.send("Hi");
 });
 
-app.get('/uploads', (req,res)=>{
-  res.send("Uploads")
+app.get('/', (req, res)=>{
+  res.send("Running")
 })
+
+//@route POST/
+//@desc Upload file to DB
+app.post('/upload', upload.single('file'), (req,res)=>{
+  res.json({file:req.file})
+})
+app.get('/upload', (req,res)=>{
+  res.json(req.file)
+})
+
 app.listen(8000, () => console.log("Server running on port 8000"));
