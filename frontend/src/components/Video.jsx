@@ -1,0 +1,43 @@
+import React, { useEffect, useRef } from "react";
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
+
+export default function Video({ src }) {
+  const videoRef = useRef(null);
+  const playerRef = useRef(null);
+
+  useEffect(() => {
+    if (videoRef.current && !playerRef.current) {
+      // Initialize Video.js player
+      playerRef.current = videojs(videoRef.current, {
+        controls: true,
+        autoplay: false,
+        preload: "auto",
+        width: 640,
+        height: 360,
+      });
+    }
+
+    if (playerRef.current && src) {
+      // Update video source
+      playerRef.current.src({ src, type: "video/mp4" });
+      playerRef.current.play();
+    }
+
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.dispose();
+        playerRef.current = null;
+      }
+    };
+  }, [src]);
+
+  return (
+    <div className="mt-6 w-[640px]">
+      <video
+        ref={videoRef}
+        className="video-js vjs-big-play-centered rounded-lg shadow-md"
+      ></video>
+    </div>
+  );
+}
