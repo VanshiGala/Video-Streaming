@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 
-export default function Video({ src }) {
+export default function VideoPlayer({ src }) {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
 
