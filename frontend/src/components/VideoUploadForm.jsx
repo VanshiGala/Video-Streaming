@@ -1,31 +1,44 @@
+
 import React, { useState } from "react";
 import axios from "axios";
 
-function VideoUploadForm({ onUploadComplete }) { //prop passed from parent component app.jsx to child component
-  const [selectedFile, setSelectedFile] = useState(null); //inputfile state
-  const [uploading, setUploading] = useState(false); //uploading status
+function VideoUploadForm({ onUploadComplete }) {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]); //display selected file 
+    setSelectedFile(e.target.files[0]);
   };
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      alert("Please select a video first!"); //if file not selected
+      alert("Please select a video first!");
       return;
     }
 
     const formData = new FormData();
-    formData.append("video", selectedFile); //here "video" is the key. It should be same as in backend
-    setUploading(true); //uploading status when selected
+    formData.append("video", selectedFile);
+    setUploading(true);
 
     try {
-      const response = await axios.post("http://localhost:8000/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        "http://localhost:8000/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      if (response.data.key) {
+        onUploadComplete(response.data.key); // Pass the key to App.jsx
+      } else {
+        alert("Upload succeeded but no key returned!");
+      }
     } catch (error) {
       console.error("Upload failed:", error);
       alert("Upload failed. Please try again.");
+    } finally {
+      // ✅ Always reset uploading status
       setUploading(false);
     }
   };
@@ -34,12 +47,28 @@ function VideoUploadForm({ onUploadComplete }) { //prop passed from parent compo
     <div>
       <h2>Upload Your Video</h2>
       <input type="file" accept="video/*" onChange={handleFileChange} />
-      <button onClick={handleUpload} className="cursor-pointer">Upload</button>
-      {uploading ? "Uploading..." : "Upload Video"}
+      <button
+        onClick={handleUpload}
+        disabled={uploading}
+        className="cursor-pointer"
+      >
+        {uploading ? "Uploading..." : "Upload Video"}
+      </button>
     </div>
   );
 }
+
 export default VideoUploadForm;
+
+
+
+
+
+
+
+
+
+
 
 
 //upload(frontend)  -> backend -> bucket upload

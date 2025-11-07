@@ -2,27 +2,28 @@ import React, { useEffect, useRef } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 
-export default function VideoPlayer({ src }) {
+export default function Video({ src }) {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
 
   useEffect(() => {
-    if (videoRef.current && !playerRef.current) {
-      // Initialize Video.js player
+    //  Do nothing until we actually have a valid video URL
+    if (!src) return;
+
+    if (!playerRef.current) {
       playerRef.current = videojs(videoRef.current, {
         controls: true,
         autoplay: false,
-        preload: "auto",
+        preload: "none",
         width: 640,
         height: 360,
       });
     }
 
-    if (playerRef.current && src) {
-      // Update video source
-      playerRef.current.src({ src, type: "video/mp4" });
+    playerRef.current.src({ src, type: "video/mp4" });
+    playerRef.current.ready(() => {
       playerRef.current.play();
-    }
+    });
 
     return () => {
       if (playerRef.current) {
