@@ -8,8 +8,9 @@ export default function Video({ src }) {
 
   useEffect(() => {
     //  Do nothing until we actually have a valid video URL
-    if (!src) return;
+    if (!src || !videoRef.current) return;
 
+    const timer = setTimeout(() => {
     if (!playerRef.current) {
       playerRef.current = videojs(videoRef.current, {
         controls: true,
@@ -17,13 +18,12 @@ export default function Video({ src }) {
         preload: "none",
         width: 640,
         height: 360,
+        fluid: true,
       });
     }
 
     playerRef.current.src({ src, type: "video/mp4" });
-    playerRef.current.ready(() => {
-      playerRef.current.play();
-    });
+  },100);
 
     return () => {
       if (playerRef.current) {
@@ -34,11 +34,13 @@ export default function Video({ src }) {
   }, [src]);
 
   return (
-    <div className="mt-6 w-[640px]">
+    <div data-vjs-player className="mt-6 w-[640px]"> 
       <video
         ref={videoRef}
         className="video-js vjs-big-play-centered rounded-lg shadow-md"
+        data-setup="{}"
       ></video>
     </div>
   );
 }
+
