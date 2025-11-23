@@ -1,24 +1,25 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
 import videoRoutes from "./routes/VideoRoute.js";
 import connectDB from "./db/db.js";
 import userRoutes from "./routes/UserRoute.js"
-import cookieParser from "cookie-parser"
-import session from "express-session"
-import MongoStore from "connect-mongo";
+// import cookieParser from "cookie-parser"
+// import session from "express-session"
+// import MongoStore from "connect-mongo";
 
-dotenv.config();
+
 connectDB();
 const app = express();
-app.use((req,res, next) => {
-    console.log("Incoming request: ");
-    console.log(`req.method: ${req.method}`);
-    console.log(`req.headers: ${JSON.stringify(req.headers)}`);
-    console.log(`req.url: ${req.url}`);
-    console.log(`req.body: ${JSON.stringify(req.body)}`);
-    next();
-});
+//app.use((req,res, next) => {
+//    console.log("Incoming request: ");
+ //   console.log(`req.method: ${req.method}`);
+  //  console.log(`req.headers: ${JSON.stringify(req.headers)}`);
+   // console.log(`req.url: ${req.url}`);
+    //console.log(`req.body: ${JSON.stringify(req.body)}`);
+    //next();
+//});
 
 // app.use(cors({ origin: "http://localhost:5173" , 
 //     credentials:true,
@@ -36,7 +37,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+//app.use(cookieParser());
 //app.set("trust proxy", 1)
 // app.use(session({
 //     secret:process.env.SESSION_SECRET || "super-secret-key",

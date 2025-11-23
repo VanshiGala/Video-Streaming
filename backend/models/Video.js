@@ -1,7 +1,18 @@
 import mongoose from "mongoose";
 
 const VideoSchema = new mongoose.Schema({
-    title:String,
-    description:String,
-    author:String
+    videoUrl : {
+        type:String
+    },
+    fileName : {
+        type:String
+    },
+    createdAt : {
+        type:Date,
+        default:Date.now
+    }
 })
+
+ const Video = mongoose.model("Video", VideoSchema)
+
+ export default Video

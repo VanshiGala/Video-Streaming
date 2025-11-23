@@ -10,6 +10,6 @@ const s3 = new S3Client({
   credentials:{ //compulsory
     accessKeyId:process.env.B2_ACCESS_KEY_ID,
     secretAccessKey: process.env.B2_SECRET_ACCESS_KEY,
-  }
+  }, 
 })
 export default s3
