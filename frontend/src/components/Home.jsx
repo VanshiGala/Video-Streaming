@@ -3,7 +3,10 @@ import axios from "axios";
 import Video from "../components/Video";
 //import { useAuth0 } from "@auth0/auth0-react";
 //import VideoUploadForm from "../components/VideoUploadForm";
-import {Search} from "lucide-react"
+// import {Swiper, SwiperSlide} from "swiper/react"
+// import { Autoplay, Pagination } from "swiper";
+// import "swiper/css"
+// import "swiper/css/pagination"
 
 export default function Home() {
   const [videos, setVideos] = useState([]); //list of videos from DB
@@ -44,8 +47,35 @@ export default function Home() {
   }, []);
   // }, [isAuthenticated]);
 
+// const Banners =[
+//   "",
+//   "",
+//   "",
+//   "",
+//   ""
+// ]
+
   return (
     <div className="p-8">
+      <div className="mb-8">
+        {/* <Swiper
+          modules={[Autoplay, Pagination]}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          loop={true}
+          pagination={{ clickable: true }}
+          className="rounded-lg overflow-hidden"
+        >
+          {Banners.map((banner, idx) => (
+            <SwiperSlide key={idx}>
+              <img
+                src={banner}
+                alt={`Banner ${idx + 1}`}
+                className="w-full h-56 md:h-96 object-cover"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper> */}
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {videos.map((v) => (
           <div key={v._id} className="flex flex-col items-center">

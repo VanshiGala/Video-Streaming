@@ -6,6 +6,7 @@ export const getSignedVideoUrl = async (req, res) => {
   try {
     // const key  = decodeURIComponent(req.params.key); //decodedURIComponent -> used if the key might contain special char
     const key = req.params[0]; //extract obj key/path
+    //const {key} = req.query
     console.log("Key received: ", key)
    if (!key) {
       console.log(" Missing 'key' in signed URL request");
@@ -20,7 +21,7 @@ export const getSignedVideoUrl = async (req, res) => {
 
     // Generate pre-signed URL valid for 1 hour (3600 seconds)
     const signedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
-
+    console.log("Signed url: ",signedUrl)
     res.json({ signedUrl }); //send back to the client so frontend can use
   } catch (error) {
     console.error("Error generating signed URL:", error.message);

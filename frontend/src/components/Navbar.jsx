@@ -1,6 +1,10 @@
 import { Search, User2Icon } from "lucide-react";
-
+import { useAuth0 } from "@auth0/auth0-react";
+import {useNavigate} from "react-router-dom"
 function Navbar() {
+  const {isAuthenticated, loginWithRedirect, logout}= useAuth0();
+  const navigate = useNavigate()
+
   return (
     <nav className="relative flex items-center h-16 px-4 bg-white shadow-md">
       <h3 className="text-2xl font-bold">StreamIt</h3>
@@ -18,8 +22,28 @@ function Navbar() {
         </div>
       </div>
 
-      <div className="ml-auto">
-        <User2Icon size={30}/>
+      <div className="ml-auto flex items-center gap-4">
+        {isAuthenticated ? (
+          <>
+            <button
+              onClick={() => logout({ returnTo: window.location.origin })}
+              className="px-2 py-2 hover:bg-gray-300 text-black rounded cursor-pointer"
+            >
+              Logout
+            </button>
+            <User2Icon size={30} />
+          <button onClick={()=>navigate("/Upload")}>Upload</button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => loginWithRedirect()}
+              className="px-2 py-2 hover:bg-gray-300 text-black cursor-pointer font-medium border rounded-xl"
+            >
+              Login
+            </button>
+          </>
+        )}
       </div>
     </nav>
   );

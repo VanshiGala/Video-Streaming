@@ -8,7 +8,7 @@ import userRoutes from "./routes/UserRoute.js"
 // import cookieParser from "cookie-parser"
 // import session from "express-session"
 // import MongoStore from "connect-mongo";
-
+import QueueRoute from "./routes/QueueRoute.js"
 
 connectDB();
 const app = express();
@@ -57,6 +57,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/", videoRoutes);
 app.use("/",userRoutes)
+app.use("/queue", QueueRoute)
 
 app.get("/", (req, res) => res.send("Server running"));
 

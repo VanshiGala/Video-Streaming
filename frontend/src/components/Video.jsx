@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import videojs from "video.js";
-import "video.js/dist/video-js.css";
+import "video.js/dist/video-js.css"; //imp
 
 export default function Video({ src }) {
   const videoRef = useRef(null);
@@ -15,7 +15,7 @@ export default function Video({ src }) {
       playerRef.current = videojs(videoRef.current, {
         controls: true,
         autoplay: false,
-        preload: "none",
+        preload: "none", //none
         width: 640,
         height: 360,
         fluid: true,

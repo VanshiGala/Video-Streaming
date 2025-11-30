@@ -17,8 +17,10 @@ router.post("/upload",jwtCheck,upload.single("video"),(req,res,next)=>{
     next();
 },uploadVideo);
 // router.get("/signed-url/:key(*)", getSignedVideoUrl); //won't work in latest node and express version
-// router.get("/signed-url/*", getSignedVideoUrl); // won't work in current version
+ //router.get("/signed-url", getSignedVideoUrl); // won't work in current version
 router.get(/^\/signed-url\/(.+)/, getSignedVideoUrl); //reg-ex is the modern way
+//to get signed url in browser -> route is -> signed-url/key
+
 
 //list all videos
 router.get("/all", async (req, res) => {

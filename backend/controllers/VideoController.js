@@ -25,6 +25,7 @@
 
     const savedVideo = await Video.create({
       fileName: key,
+       videoUrl : `${process.env.B2_ENDPOINT}/${process.env.B2_BUCKET_NAME}/${params.Key}`,
     }); //save fileName to DB
 
     //calculate time to upload

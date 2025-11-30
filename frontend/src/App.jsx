@@ -152,13 +152,10 @@
 import { Routes, Route, Link } from "react-router-dom";
 import Home from "./components/Home";
 import Upload from "./components/Upload";
-import LoginButton from "./components/LoginButton";
-import LogoutButton from "./components/LogoutButton";
-import { useAuth0 } from "@auth0/auth0-react";
 import Navbar from "./components/Navbar";
 
 export default function App() {
-  const { isAuthenticated,user } = useAuth0();
+ 
 
   return (
     <div>
